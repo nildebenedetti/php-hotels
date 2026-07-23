@@ -18,27 +18,44 @@
 </header>
 <main class="p-4">
     <section class="hotels-table">
+    <table class="table table-info table-hover border border-secondary">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Description</th>
+            <th scope="col">Parking</th>
+            <th scope="col">Distance to Center</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
 
-    
-    <?php
+                $counter = 1;
 
-    $counter = 1;
+                foreach ( $hotels as $hotel) {
+                // adapt value for table notation
+                $isParking = $hotel['parking'] ? 'yes' : 'no';
 
-    foreach ( $hotels as $hotel ) {
-        
-        echo "<strong>$counter) " . $hotel['name'] . "</strong>";
-        echo "<br>";
+                    echo "<tr>
+                    <td>" . $counter . "</td>
+                    <td>" . $hotel['name'] . "</td>
+                    <td>" . $hotel['vote'] ."/5" . "</td>
+                    <td>" . $hotel['description'] . "</td>
+                    <td>" . $isParking . "</td>
+                    <td>" . $hotel['distance_to_center'] . "km" . "</td>
+                    </tr>";
+                    
+                    $counter++;
+                }
 
-        foreach ( $hotel as $key => $value) {
-            echo $key . ": " . $value ;
-            echo "<br>";
-        }
+            ?>
 
-        echo "<br>";
-        $counter++;
-    }
 
-    ?>
+        </tbody>
+
+    </table>
     </section>
     
     <!--- Bootstrap Script --->
