@@ -35,12 +35,9 @@
                 } else {
                     continue;
                 }
-
             }
         }
     }
-
-    var_dump($filteredHotels);
 
 ?>
 <!DOCTYPE html>
@@ -80,7 +77,7 @@
     <table class="table table-info table-hover border border-secondary">
         <thead>
             <tr>
-            <th scope="col">ID</th>
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             <th scope="col">Rating</th>
             <th scope="col">Description</th>
@@ -90,10 +87,11 @@
         </thead>
         <tbody>
             <?php
-
+                // add variable to memo which hotel list is to be used
+                $selectedHotels = ($parking === 'all') ? $hotels : $filteredHotels;
                 $counter = 1;
 
-                foreach ( $hotels as $hotel) {
+                foreach ( $selectedHotels as $hotel) {
                 // adapt value for table notation
                 $isParking = $hotel['parking'] ? 'yes' : 'no';
 
