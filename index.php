@@ -1,6 +1,47 @@
 <?php
     // import hotels data 
     require_once __DIR__ . '/hotels-list.php';
+
+    // checking if any parameter has been set with the form at submit
+    // this one for parking
+
+    $parking = $_GET['parking'] ??  'all'; // THIS IS CALLED NULL COALESCING OPERATOR
+                                           // if key = null a default value is assigned
+    // save filtered list based on request parameters
+
+    $filteredHotels = null;
+
+    if ( $parking !== 'all' ) {
+        // SE FILTRO PARKING === SI
+        if ( $parking === 'yes')
+            // devo esaminare ciascun hotel con foreach
+            foreach ( $hotels as $hotel ) {
+                // SE il valore parking === true allora lo aggiungo alla filtered list
+                    if ( $hotel['parking'] ) {
+                        $filteredHotels[] = $hotel;
+                    } else {
+                    // ALTRIMENTI lo salto con continue
+                    continue;
+                    }    
+                }
+        // SE FILTRO PARKING ==== NO
+        if ( $parking === 'no' ) {
+            // devo esaminare ciascun hotel con foreach
+            foreach ( $hotels as $hotel ) {
+                // SE il valore parking === false allora lo aggiungo alla filtered list
+                if ( !$hotel['parking'] ) {
+                    $filteredHotels[] = $hotel;
+                // ALTRIMENTI lo salto con continue 
+                } else {
+                    continue;
+                }
+
+            }
+        }
+    }
+
+    var_dump($filteredHotels);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +58,24 @@
     <h1>Discover Hotels nearby PHPdale</h1>
 </header>
 <main class="p-4">
+    <!--- form for handling filters -->
+    <section class="form p-4">
+        <!--- keep in mind GET as form method is vital here!!! --->
+        <form method="get" action="index.php">
+        <div class="select-wrapper">
+            <!--- parking select -->
+            <div class="parking-select-wrapper p-3">
+                <label for="parking-select" class="py-2">Parking</label>
+                <select class="form-select" id="parking-select" name="parking">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="all" selected>Show all</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Refine</button>
+        </form>
+    </section>
     <section class="hotels-table">
     <table class="table table-info table-hover border border-secondary">
         <thead>
