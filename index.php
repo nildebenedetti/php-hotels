@@ -128,20 +128,21 @@
                 $counter = 1;
                 foreach ( $filteredHotels as $hotel) {
                 // adapt value for table notation
-                $isParking = $hotel['parking'] ? 'yes' : 'no';
-                    echo "<tr>
-                    <td>" . $counter . "</td>
-                    <td>" . $hotel['name'] . "</td>
-                    <td>" . $hotel['vote'] ."/5" . "</td>
-                    <td>" . $hotel['description'] . "</td>
-                    <td>" . $isParking . "</td>
-                    <td>" . $hotel['distance_to_center'] . "km" . "</td>
-                    </tr>";
-                    
-                    $counter++;
-                }
+                $isParking = $hotel['parking'] ? 'yes' : 'no';?>
 
-            ?>
+                    <tr>
+                        <td><?php echo $counter ?></td>
+                        <td><?php echo $hotel['name'] ?></td>
+                        <td><?php echo $hotel['vote'] . "/5" ?></td>
+                        <td><?php echo $hotel['description'] ?></td>
+                        <td><?php echo $isParking ?></td>
+                        <td><?php echo $hotel['distance_to_center'] . "km" ?></td>
+                    </tr>
+                    
+                <?php 
+                $counter++;
+                }
+                ?>
 
 
         </tbody>
