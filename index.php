@@ -3,46 +3,11 @@
     require_once __DIR__ . '/hotels-list.php';
 
     // checking if any parameter has been set with the form at submit
-    // this one for parking
-
+    // this one for parking 
     $parking = $_GET['parking'] ??  'all'; // THIS IS CALLED NULL COALESCING OPERATOR
+    
     // if key = null a default value is assigned
     $minScore = $_GET['rating'] ?? 'all';
-    // save filtered list based on request parameters
-
-    $filteredHotels = [];
-
-    // FACCIAMO PRIMA TUTTI I CONTROLLI
-    // SE È BOCCIATO METTIAMO CONTINUE => esce dal loop e passa oltre
-    // SE PASSA TUTTI I CHECK PERCHÈ NON VIENE DEPISTATO LO METTIAMO NELLA LISTA
-
-    $loopCounter = 0;
-    foreach ( $hotels as $hotel ) {
-    // adapt value for CHECK    
-    $isParking = $hotel['parking'] ? 'yes' : 'no';
-    // block 1 - parking filter
-    // if the parking is not set as all options AND is not null
-    if ( $parking !== 'all' && $parking !== null ) {
-             // then check if parking is different from chosen value
-            if (  $isParking !== $parking ) {
-                // if yes, exit the loop - it won't be added to the list
-                continue;
-            }
-        }
-    // block 2 - min rating
-    // if the vote is not set as all options and not null
-    if ( $minScore !== 'all' && $minScore !== null ) {
-            // then check if the vote is < minRating of select
-            if ( $hotel['vote'] < $minScore ) {           
-                // in case is under min acceptable value, exit the circle
-                continue;
-                }
-
-    }
-    // assign ALL HOTELS PASSING THE 2 TEST ROUNDS TO FILTERED LIST
-    $filteredHotels[] = $hotel;
-
-    }
 
 ?>
 <!DOCTYPE html>
@@ -126,10 +91,27 @@
         <tbody>
             <?php
                 $counter = 1;
-                foreach ( $filteredHotels as $hotel) {
-                // adapt value for table notation
-                $isParking = $hotel['parking'] ? 'yes' : 'no';?>
-
+                foreach ( $hotels as $hotel ) {
+                // define if hotel has parking
+                $isParking = $hotel['parking'] ? 'yes' : 'no';
+                // block 1 - parking filter
+                // if the parking is not set as all options AND is not null
+                if ( $parking !== 'all' && $parking !== null ) {
+                        // then check if parking is different from chosen value
+                        if (  $isParking !== $parking ) {
+                            // if yes, exit the loop - it won't be added to the list
+                            continue;
+                        }
+                    }
+                // block 2 - min rating
+                // if the vote is not set as all options and not null
+                if ( $minScore !== 'all' && $minScore !== null ) {
+                        // then check if the vote is < minRating of select
+                        if ( $hotel['vote'] < $minScore ) {           
+                            // in case is under min acceptable value, exit the circle
+                            continue;
+                            }
+                }?>
                     <tr>
                         <td><?php echo $counter ?></td>
                         <td><?php echo $hotel['name'] ?></td>
@@ -139,6 +121,7 @@
                         <td><?php echo $hotel['distance_to_center'] . "km" ?></td>
                     </tr>
                     
+                
                 <?php 
                 $counter++;
                 }
