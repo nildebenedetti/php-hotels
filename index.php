@@ -6,59 +6,43 @@
     // this one for parking
 
     $parking = $_GET['parking'] ??  'all'; // THIS IS CALLED NULL COALESCING OPERATOR
-                                           // if key = null a default value is assigned
+    // if key = null a default value is assigned
     $minScore = $_GET['rating'] ?? 'all';
     // save filtered list based on request parameters
 
-    var_dump($minScore);
+    $filteredHotels = [];
 
-    $filteredHotels = null;
+    // FACCIAMO PRIMA TUTTI I CONTROLLI
+    // SE È BOCCIATO METTIAMO CONTINUE => esce dal loop e passa oltre
+    // SE PASSA TUTTI I CHECK PERCHÈ NON VIENE DEPISTATO LO METTIAMO NELLA LISTA
 
-    if ( $parking === 'all' ) {
-        $filteredHotels = $hotels;
-    } else {
-        // SE FILTRO PARKING === SI
-        if ( $parking === 'yes')
-            // devo esaminare ciascun hotel con foreach
-            foreach ( $hotels as $hotel ) {
-                // SE il valore parking === true allora lo aggiungo alla filtered list
-                    if ( $hotel['parking'] ) {
-                        $filteredHotels[] = $hotel;
-                    } else {
-                    // ALTRIMENTI lo salto con continue
-                    continue;
-                    }    
-                }
-        // SE FILTRO PARKING ==== NO
-        if ( $parking === 'no' ) {
-            // devo esaminare ciascun hotel con foreach
-            foreach ( $hotels as $hotel ) {
-                // SE il valore parking === false allora lo aggiungo alla filtered list
-                if ( !$hotel['parking'] ) {
-                    $filteredHotels[] = $hotel;
-                // ALTRIMENTI lo salto con continue 
-                } else {
-                    continue;
-                }
+    $loopCounter = 0;
+    foreach ( $hotels as $hotel ) {
+    // adapt value for CHECK    
+    $isParking = $hotel['parking'] ? 'yes' : 'no';
+    // block 1 - parking filter
+    // if the parking is not set as all options AND is not null
+    if ( $parking !== 'all' && $parking !== null ) {
+             // then check if parking is different from chosen value
+            if (  $isParking !== $parking ) {
+                // if yes, exit the loop - it won't be added to the list
+                continue;
             }
         }
-    } // ELSE FILTERED HOTELS === TUTTI HOTEL MA MEGLIO EMTTO PRIMA QUESTA CONDIZIONE
+    // block 2 - min rating
+    // if the vote is not set as all options and not null
+    if ( $minScore !== 'all' && $minScore !== null ) {
+            // then check if the vote is < minRating of select
+            if ( $hotel['vote'] < $minScore ) {           
+                // in case is under min acceptable value, exit the circle
+                continue;
+                }
 
-    var_dump($filteredHotels);
+    }
+    // assign ALL HOTELS PASSING THE 2 TEST ROUNDS TO FILTERED LIST
+    $filteredHotels[] = $hotel;
 
-    // New list for hotels con min rating
-    // SE IL MIN RATING È < RATING SELECTED
-        // ALLORA CONTINUE - COSI SALTA ESECUZIONE RESTO CODICE
-    // SE MIN RATING >= RATING SELECTED
-        // controlla se current element è gia nella lista
-                // SE NO continue
-                // SE SI rimuovilo
-                // se uso UNSET resta il buco
-                // se no devo fare la SPLICE ma mi serve index
-                // facciamo la splice e usiamo la foreach per cercare index usando la $key come valore da assegnare a $index quando i valori matchano
-
-
-
+    }
 
 ?>
 <!DOCTYPE html>
@@ -98,25 +82,25 @@
             </div>
             <!--- star rating select -->
             <div class="parking-select-wrapper p-3">
-                <label for="parking-select" class="py-2">Minimum Rating Acceptable</label>
+                <label for="parking-select" class="py-2">Min Rating</label>
                 <select class="form-select" id="rating-select" name="rating">
                     <option value="1" 
-                    <?php echo $rating === "1" ? "selected" :  "";  ?>
-                        >1</option>
+                    <?php echo $minScore === "1" ? "selected" :  "";  ?>
+                        > 1</option>
                     <option value="2"
-                    <?php echo $rating === "2" ? "selected" :  "";  ?>
+                    <?php echo $minScore === "2" ? "selected" :  "";  ?>
                     >2</option>
                     <option value="3"
-                    <?php echo $rating === "3" ? "selected" :  "";  ?>
+                    <?php echo $minScore === "3" ? "selected" :  "";  ?>
                     >3</option>
                     <option value="4"
-                    <?php echo $rating === "4" ? "selected" :  "";  ?>
+                    <?php echo $minScore === "4" ? "selected" :  "";  ?>
                     >4</option>
                     <option value="5"
-                    <?php echo $rating === "5" ? "selected" :  "";  ?>
+                    <?php echo  $minScore === "5" ? "selected" :  "";  ?>
                     >5</option>
                     <option value="all"
-                    <?php echo $rating === "all" ? "selected" :  "";  ?>
+                    <?php echo  $minScore === "all" ? "selected" :  "";  ?>
                     >Show all</option>
                 </select>
             </div>
@@ -141,14 +125,10 @@
         </thead>
         <tbody>
             <?php
-                // add variable to memo which hotel list is to be used
-                $selectedHotels = ($parking === 'all') ? $hotels : $filteredHotels;
                 $counter = 1;
-
-                foreach ( $selectedHotels as $hotel) {
+                foreach ( $filteredHotels as $hotel) {
                 // adapt value for table notation
                 $isParking = $hotel['parking'] ? 'yes' : 'no';
-
                     echo "<tr>
                     <td>" . $counter . "</td>
                     <td>" . $hotel['name'] . "</td>
